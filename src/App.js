@@ -29,7 +29,7 @@ const App = () => {
   };
   const onRequest = async () => {
     axios({
-      url: "http://127.0.0.1:5000/pdf/seguro.xls",
+      url: "http://3.136.86.4:8080/pdf/seguro.xls",
       method: "POST",
       responseType: "blob",
       data: { min_date: minDate, max_date: maxDate, start_date: startDate }, // important

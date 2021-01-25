@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import { saveAs } from "file-saver";
 import axios from "axios";
+import { layout } from "./utils/layouts"
+import Login from './components/Login'
+import GenerateXls from './components/GenerateXls'
 import {
-  DatePicker,
   Layout,
-  Button,
   Form,
   Typography,
   Row,
-  Input,
   message
 } from "antd";
 import SecureLS from "secure-ls";
@@ -19,137 +19,31 @@ const { Title } = Typography;
 const BASE_URL_PRODUCTION = "http://52.15.176.199:8080"
 const BASE_URL_DEV = "http://127.0.0.1:8080"
 const App = () => {
-  const layout = {
-    labelCol: { span: 11 },
-    wrapperCol: { span: 16 },
-  };
   const [isLogged, setIsLogged] = useState(false);
-  const [minDate, setMinDate] = useState(0);
-  const [maxDate, setMaxDate] = useState(0);
-  const [startDate, setStartDate] = useState(0);
-
-  const tailLayout = {
-    wrapperCol: { offset: 11, span: 16 },
-  };
   let ls = new SecureLS({ encodingType: "aes" });
   const handleShowFields = () => {
     if (!isLogged) {
       return (
-        <>
-          <Form.Item
-            label="Nome"
-            name="name"
-            rules={[{ required: true, message: "Please input your username!" }]}
-          >
-            <Input style={{ width: "13em" }} />
-          </Form.Item>
-
-          <Form.Item
-            label="Senha"
-            name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-          >
-            <Input.Password style={{ width: "13em" }} />
-          </Form.Item>
-          <Form.Item {...tailLayout}>
-            <Button
-              style={{ backgroundColor: "#8BC34A" }}
-              shape="round"
-              htmlType="submit"
-            >
-              Login
-            </Button>
-          </Form.Item>
-        </>
+        <Login />
       );
     }
     return (
-      <>
-        <Form.Item
-          label="Data de Inicio"
-          name="dataInicio"
-          style={{ marginTop: "2em" }}
-          rules={[
-            {
-              required: true,
-              message: "Por favor preencha a data de inicio",
-            },
-          ]}
-        >
-          <DatePicker
-            placeholder=""
-            format="DD/MM/YYYY"
-            onChange={(date, dateString) => {
-              setMinDate(dateString);
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Data de fim"
-          name="dataFim"
-          rules={[
-            {
-              required: true,
-              message: "Por favor preencha a data de fim",
-            },
-          ]}
-        >
-          <DatePicker
-            placeholder=""
-            format="DD/MM/YYYY"
-            onChange={(date, dateString) => {
-              setMaxDate(dateString);
-            }}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Data de inicio preenchimento"
-          name="dataPreenchimento"
-          extra="Colocar a data de inicio do preenchimento do formulário"
-          rules={[
-            {
-              required: true,
-              message: "Por favor preencha a data de inicio de preenchimento",
-            },
-          ]}
-        >
-          <DatePicker
-            placeholder=""
-            format="DD/MM/YYYY"
-            onChange={(date, dateString) => {
-              setStartDate(dateString);
-            }}
-          />
-        </Form.Item>
-        <Form.Item {...tailLayout}>
-          <Button
-            style={{ backgroundColor: "#8BC34A" }}
-            shape="round"
-            htmlType="submit"
-          >
-            Gerar
-          </Button>
-        </Form.Item>
-      </>
+      <GenerateXls />
     );
   };
 
   const onFinish = (values) => {
-    console.log("GABRIEL VALUES", values);
     if (!isLogged) {
       onLogin(values);
       return
     }
-    onRequest()
-    // onRequest().then();
+    onRequest(values)
   };
 
   const onLogin = ({ name, password }) => {
     let bodyFormData = new FormData();
     bodyFormData.append("name", name);
     bodyFormData.append("password", password);
-    console.log(bodyFormData);
     axios({
       url: `${BASE_URL_PRODUCTION}/login`,
       method: "POST",
@@ -161,12 +55,11 @@ const App = () => {
     })
       .then((response) => {
         ls.set("key", { data: response.data.token });
-        console.log(response.data.token)
         setIsLogged(true)
         success()
       })
       .catch((error) => {
-        console.log(error.response);
+        onError(error.response)
       });
   };
   const onFinishFailed = (errorInfo) => {
@@ -175,13 +68,24 @@ const App = () => {
   const success = () => {
     message.success('Login Aprovado', 2);
   };
-  const onRequest = () => {
+  const onError = ({status}) => {
+    if (status === 403) {
+      message.error('Credenciais inválidas', 2)
+    }
+    if (status === 401) {
+      message.error('Nome não encontrado')
+    }
+  }
+  const onRequest = ({minDate, maxDate, startDate}) => {
+    const min_date = minDate.format('DD/MM/YYYY');
+    const max_date = maxDate.format('DD/MM/YYYY');
+    const start_date = startDate.format('DD/MM/YYYY');
     const token = ls.get('key').data
     axios({
       url: `${BASE_URL_PRODUCTION}/pdf/seguro.xls`,
       method: "POST",
       responseType: "blob",
-      data: { min_date: minDate, max_date: maxDate, start_date: startDate },
+      data: { min_date, max_date, start_date },
       headers: {
         "x-access-token": token
       }
@@ -189,7 +93,19 @@ const App = () => {
       saveAs(response.data, "seguro.xls");
     });
   };
+  // useEffect(() => {
+  //   const token = ls.get('key').data
+  //   if (token) {
+  //     setIsLogged(true)
+  //     return
+  //   }
 
+  //   window.addEventListener('beforeunload', () => {
+  //     setIsLogged(false)
+  //     ls.removeAll()
+  //     return 
+  //   })
+  // }, [])
   return (
     <Layout>
       <Header
@@ -206,7 +122,7 @@ const App = () => {
         style={{ padding: "0 50px", marginTop: "2em" }}
       >
         <div className="site-layout-background" style={{ minHeight: "42em" }}>
-          <Row align="center">
+          <Row align="center" style={{marginBottom: "8em"}}>
             <Title>Seguro Ítaca</Title>
           </Row>
           <Form

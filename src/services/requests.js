@@ -16,14 +16,6 @@ const onLogin = ({ name, password }) => {
       "Content-Type": `multipart/form-data;`,
     },
   });
-  //   .then((response) => {
-  //     ls.set("key", { data: response.data.token });
-  //     setIsLogged(true)
-  //     success()
-  //   })
-  //   .catch((error) => {
-  //     onError(error.response)
-  //   });
 };
 
 const onDownload = (token, obj) => {
@@ -36,9 +28,6 @@ const onDownload = (token, obj) => {
         "x-access-token": token
       }
     })
-    // .then((response) => {
-    //   saveAs(response.data, "seguro.xls");
-    // });
   };
 
   export {onLogin, onDownload}

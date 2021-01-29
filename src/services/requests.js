@@ -1,7 +1,7 @@
 import axios from "axios";
-
-const BASE_URL_PRODUCTION = "http://52.15.176.199:8080";
-const BASE_URL_DEV = "http://127.0.0.1:8080";
+const { REACT_APP_PROD_URL } = process.env
+const BASE_URL_PRODUCTION = `${REACT_APP_PROD_URL}`;
+// const BASE_URL_DEV = "http://127.0.0.1:8080";
 
 const onLogin = ({ name, password }) => {
   let bodyFormData = new FormData();

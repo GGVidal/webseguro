@@ -9,7 +9,7 @@ const onLogin = ({ name, password }) => {
   bodyFormData.append("name", name);
   bodyFormData.append("password", password);
   return axios({
-    url: `${BASE_URL_PRODUCTION}/login`,
+    url: `http://52.15.176.199:8080/login`,
     method: "POST",
     responseType: "json",
     data: bodyFormData,
@@ -21,7 +21,7 @@ const onLogin = ({ name, password }) => {
 
 const onDownload = (token, obj) => {
   return axios({
-    url: `${BASE_URL_PRODUCTION}/pdf/seguro.xls`,
+    url: `http://52.15.176.199:8080/pdf/seguro.xls`,
     method: "POST",
     responseType: "blob",
     data: obj,

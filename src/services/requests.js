@@ -4,7 +4,7 @@ const BASE_URL_PRODUCTION = `${REACT_APP_PROD_URL}`;
 // const BASE_URL_DEV = "http://127.0.0.1:8080";
 
 const onLogin = ({ name, password }) => {
-  console.log("URL", `${BASE_URL_PRODUCTION}/login`);
+  // console.log("URL", `${BASE_URL_PRODUCTION}/login`);
   let bodyFormData = new FormData();
   bodyFormData.append("name", name);
   bodyFormData.append("password", password);

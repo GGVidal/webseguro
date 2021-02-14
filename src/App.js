@@ -1,16 +1,11 @@
 import React from "react";
 import "antd/dist/antd.css";
-import {
-  Layout,
-  Typography,
-  Row,
-} from "antd";
-import Form from './components/Form'
+import { Layout, Typography, Row } from "antd";
+import Form from "./components/Form";
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
 const App = () => {
-
   // useEffect(() => {
   //   const token = ls.get('key').data
   //   if (token) {
@@ -21,7 +16,7 @@ const App = () => {
   //   window.addEventListener('beforeunload', () => {
   //     setIsLogged(false)
   //     ls.removeAll()
-  //     return 
+  //     return
   //   })
   // }, [])
   return (
@@ -39,11 +34,11 @@ const App = () => {
         className="site-layout"
         style={{ padding: "0 50px", marginTop: "2em" }}
       >
-        <div className="site-layout-background" style={{ minHeight: "42em" }}>
-          <Row align="center" style={{marginBottom: "8em"}}>
+        <div className="site-layout-background" style={{ minHeight: "48em" }}>
+          <Row align="center" style={{ marginBottom: "8em" }}>
             <Title>Seguro Ítaca</Title>
           </Row>
-          <Form/>
+          <Form />
         </div>
       </Content>
     </Layout>

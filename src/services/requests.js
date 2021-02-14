@@ -1,6 +1,6 @@
 import axios from "axios";
-const { REACT_APP_PROD_URL } = process.env
-const BASE_URL_PRODUCTION = `${REACT_APP_PROD_URL}`;
+const { REACT_APP_AWS_URL } = process.env
+const BASE_URL_PRODUCTION = `${REACT_APP_AWS_URL}`;
 // const BASE_URL_DEV = "http://127.0.0.1:8080";
 
 const onLogin = ({ name, password }) => {

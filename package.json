@@ -16,8 +16,8 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "REACT_APP_AWS_URL=http://52.15.176.199:8080 react-scripts start",
+    "build": "REACT_APP_AWS_URL=http://52.15.176.199:8080 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
